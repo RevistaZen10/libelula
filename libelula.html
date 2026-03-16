@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Libélula – Divulgação Científica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --teal:#1a7a7a;--teal-light:#2aabab;--teal-pale:#e0f5f5;
+      --amber:#e8a020;--dark:#0d2b2b;--mid:#1f4f4f;
+      --text:#2c3e3e;--muted:#607070;--bg:#f7fcfc;--white:#ffffff;--radius:14px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+
+    nav{position:sticky;top:0;z-index:100;background:var(--dark);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;box-shadow:0 2px 12px rgba(0,0,0,.35);}
+    .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+    .nav-logo svg{width:32px;height:32px;}
+    .nav-logo span{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--teal-light);letter-spacing:.04em;}
+    nav ul{list-style:none;display:flex;gap:2rem;}
+    nav ul a{color:#c8e8e8;text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s;}
+    nav ul a:hover{color:var(--amber);}
+
+    header{position:relative;background:linear-gradient(135deg,var(--dark) 0%,var(--mid) 60%,#1a5f5f 100%);padding:5rem 2rem 6rem;text-align:center;overflow:hidden;}
+    header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 30%,rgba(42,171,171,.18) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 10% 70%,rgba(232,160,32,.08) 0%,transparent 70%);}
+    .df-bg{position:absolute;right:5%;top:10%;opacity:.08;pointer-events:none;width:min(280px,36vw);}
+    .eyebrow{display:inline-block;background:rgba(42,171,171,.25);border:1px solid rgba(42,171,171,.5);color:var(--teal-light);font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.35rem 1rem;border-radius:99px;margin-bottom:1.4rem;}
+    header h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6vw,4rem);color:var(--white);line-height:1.15;margin-bottom:1rem;}
+    header h1 em{color:var(--teal-light);font-style:italic;}
+    header p.subtitle{max-width:600px;margin:0 auto 2.4rem;color:#b0d4d4;font-size:1.05rem;font-weight:300;}
+    .hero-cta{display:inline-flex;align-items:center;gap:.5rem;background:var(--teal-light);color:var(--dark);font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:99px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(42,171,171,.4);}
+    .hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(42,171,171,.55);}
+
+    section{padding:5rem 2rem;}
+    .container{max-width:1060px;margin:0 auto;}
+    .section-label{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.5rem;}
+    .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.4rem);color:var(--dark);margin-bottom:1rem;}
+    .section-sub{color:var(--muted);max-width:560px;font-size:.97rem;margin-bottom:3rem;}
+
+    #temas{background:var(--white);}
+    .topics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+    .topic-card{background:var(--bg);border:1px solid #d0ecec;border-radius:var(--radius);padding:2rem;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+    .topic-card::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--teal-light);}
+    .topic-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(26,122,122,.12);}
+    .topic-icon{font-size:2rem;margin-bottom:.8rem;}
+    .topic-card h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--dark);margin-bottom:.5rem;}
+    .topic-card p{color:var(--muted);font-size:.9rem;}
+    .topic-card a{display:inline-flex;align-items:center;gap:.35rem;margin-top:1.2rem;font-size:.85rem;font-weight:600;color:var(--teal);text-decoration:none;transition:gap .2s,color .2s;}
+    .topic-card a:hover{color:var(--teal-light);gap:.6rem;}
+
+    #sobre{background:linear-gradient(160deg,var(--dark) 0%,var(--mid) 100%);}
+    #sobre .section-label{color:var(--amber);}
+    #sobre .section-title{color:var(--white);}
+    #sobre .section-sub{color:#9ec8c8;}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    @media(max-width:700px){.about-grid{grid-template-columns:1fr;} nav ul{display:none;}}
+    .about-text p{color:#c0dede;font-size:.97rem;margin-bottom:1rem;}
+    .about-text .emoji-line{font-size:1.4rem;margin:1.2rem 0;}
+    .about-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:2rem;text-align:center;}
+    .avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--teal-light),var(--amber));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;color:var(--white);margin:0 auto 1rem;}
+    .about-card h3{color:var(--white);font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:.25rem;}
+    .about-card .role{color:var(--teal-light);font-size:.85rem;font-weight:500;margin-bottom:1.2rem;}
+    .contact-links{display:flex;flex-direction:column;gap:.7rem;margin-top:1rem;}
+    .contact-links a{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.6rem 1.2rem;border-radius:99px;font-size:.85rem;font-weight:600;text-decoration:none;transition:opacity .2s;}
+    .contact-links a:hover{opacity:.85;}
+    .btn-linkedin{background:#0a66c2;color:#fff;}
+    .btn-email{background:rgba(255,255,255,.12);color:var(--teal-light);border:1px solid rgba(42,171,171,.4);}
+
+    #publicacoes{background:var(--teal-pale);border-top:1px solid #c0e8e8;border-bottom:1px solid #c0e8e8;}
+    .zenodo-banner{background:var(--white);border:1px solid #c0e8e8;border-radius:var(--radius);padding:2.5rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
+    .zenodo-icon{flex-shrink:0;width:72px;height:72px;background:var(--teal);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+    .zenodo-text{flex:1;min-width:200px;}
+    .zenodo-text h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--dark);margin-bottom:.4rem;}
+    .zenodo-text p{color:var(--muted);font-size:.9rem;}
+    .btn-zenodo{display:inline-flex;align-items:center;gap:.5rem;background:var(--teal);color:#fff;font-weight:700;font-size:.9rem;padding:.85rem 1.8rem;border-radius:99px;text-decoration:none;transition:background .2s,transform .2s;white-space:nowrap;}
+    .btn-zenodo:hover{background:var(--teal-light);transform:translateY(-2px);}
+
+    footer{background:var(--dark);padding:2.5rem 2rem;text-align:center;}
+    footer .footer-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--teal-light);margin-bottom:.5rem;}
+    footer p{color:#5a8888;font-size:.82rem;}
+    footer a{color:var(--teal-light);text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="32" cy="32" rx="3" ry="18" fill="#2aabab"/>
+      <circle cx="32" cy="14" r="5" fill="#2aabab"/>
+      <ellipse cx="18" cy="24" rx="13" ry="5" fill="#2aabab" opacity=".55" transform="rotate(-18 18 24)"/>
+      <ellipse cx="46" cy="24" rx="13" ry="5" fill="#2aabab" opacity=".55" transform="rotate(18 46 24)"/>
+      <ellipse cx="18" cy="33" rx="10" ry="4" fill="#2aabab" opacity=".35" transform="rotate(-10 18 33)"/>
+      <ellipse cx="46" cy="33" rx="10" ry="4" fill="#2aabab" opacity=".35" transform="rotate(10 46 33)"/>
+      <circle cx="30" cy="12" r="1.5" fill="#e8a020"/>
+      <circle cx="34" cy="12" r="1.5" fill="#e8a020"/>
+    </svg>
+    <span>Libélula</span>
+  </a>
+  <ul>
+    <li><a href="#temas">Temas</a></li>
+    <li><a href="#publicacoes">Publicações</a></li>
+    <li><a href="#sobre">Sobre</a></li>
+  </ul>
+</nav>
+
+<header>
+  <svg class="df-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="100" rx="10" ry="60" fill="white"/>
+    <circle cx="100" cy="45" r="18" fill="white"/>
+    <ellipse cx="55" cy="80" rx="44" ry="16" fill="white" opacity=".7" transform="rotate(-22 55 80)"/>
+    <ellipse cx="145" cy="80" rx="44" ry="16" fill="white" opacity=".7" transform="rotate(22 145 80)"/>
+    <ellipse cx="55" cy="108" rx="34" ry="12" fill="white" opacity=".45" transform="rotate(-12 55 108)"/>
+    <ellipse cx="145" cy="108" rx="34" ry="12" fill="white" opacity=".45" transform="rotate(12 145 108)"/>
+  </svg>
+  <div class="eyebrow">✦ Divulgação Científica</div>
+  <h1>Conhecimento que<br/><em>voa longe</em></h1>
+  <p class="subtitle">
+    Artigos, pesquisas e reflexões sobre Gestão da Qualidade, Redes de Empresas,
+    Clusters e Arranjos Produtivos Locais — com acesso livre via Zenodo.
+  </p>
+  <a class="hero-cta" href="https://zenodo.org/search?q=jorge+campos&sort=bestmatch" target="_blank" rel="noopener">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
+    Explorar Publicações no Zenodo
+  </a>
+</header>
+
+<section id="temas">
+  <div class="container">
+    <div class="section-label">Áreas de atuação</div>
+    <h2 class="section-title">Temas em destaque</h2>
+    <p class="section-sub">Pesquisa aplicada com foco em desenvolvimento econômico, produtividade e geração de emprego e renda.</p>
+    <div class="topics-grid">
+
+      <div class="topic-card">
+        <div class="topic-icon">🏆</div>
+        <h3>Gestão da Qualidade</h3>
+        <p>Práticas, metodologias e cases de melhoria contínua aplicados a organizações de diferentes portes e setores.</p>
+        <a href="https://zenodo.org/search?q=gest%C3%A3o+da+qualidade&sort=bestmatch" target="_blank" rel="noopener">Ver publicações →</a>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-icon">🕸️</div>
+        <h3>Redes de Empresas</h3>
+        <p>Cooperação interorganizacional, governança de redes e estratégias colaborativas para ganho competitivo.</p>
+        <a href="https://zenodo.org/search?q=redes+de+empresas&sort=bestmatch" target="_blank" rel="noopener">Ver publicações →</a>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-icon">📍</div>
+        <h3>Clusters &amp; APLs</h3>
+        <p>Arranjos Produtivos Locais, territórios inovativos e políticas públicas para desenvolvimento regional.</p>
+        <a href="https://zenodo.org/search?q=arranjos+produtivos+locais+cluster&sort=bestmatch" target="_blank" rel="noopener">Ver publicações →</a>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-icon">💼</div>
+        <h3>Produtividade &amp; Renda</h3>
+        <p>Estratégias para aumento de produtividade, competitividade e geração sustentável de emprego e renda.</p>
+        <a href="https://zenodo.org/search?q=produtividade+emprego+renda&sort=bestmatch" target="_blank" rel="noopener">Ver publicações →</a>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-icon">🔬</div>
+        <h3>Outros Temas</h3>
+        <p>Sem um recorte temático fixo — a curiosidade científica também tem lugar aqui. Diversidade de assuntos é bem-vinda.</p>
+        <a href="https://zenodo.org/search?q=jorge+campos&sort=bestmatch" target="_blank" rel="noopener">Explorar no Zenodo →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="publicacoes">
+  <div class="container">
+    <div class="section-label">Repositório aberto</div>
+    <h2 class="section-title">Publicações no Zenodo</h2>
+    <p class="section-sub">Todos os artigos e trabalhos de divulgação científica estão disponíveis gratuitamente no Zenodo — plataforma de acesso aberto do CERN.</p>
+    <div class="zenodo-banner">
+      <div class="zenodo-icon">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fill="white" width="44">
+          <path d="M6 8h28a2 2 0 012 2v28a2 2 0 01-2 2H6a2 2 0 01-2-2V10a2 2 0 012-2z"/>
+          <path d="M12 18h16M12 24h16M12 30h10" stroke="#1a7a7a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="zenodo-text">
+        <h3>Acesse o repositório completo</h3>
+        <p>Todos os trabalhos de Jorge Campos estão indexados e disponíveis para download livre. Pesquise por tema ou navegue pela coleção completa.</p>
+      </div>
+      <a class="btn-zenodo" href="https://zenodo.org/search?q=jorge+campos&sort=bestmatch" target="_blank" rel="noopener">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Ir para o Zenodo
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="sobre">
+  <div class="container">
+    <div class="section-label">Quem escreve</div>
+    <h2 class="section-title" style="color:#fff;">Sobre o autor</h2>
+    <p class="section-sub">Pesquisador dedicado a tornar o conhecimento científico acessível e aplicável.</p>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Me dedico bastante aos temas de <strong style="color:#2aabab;">gestão da qualidade</strong> e ao trabalho conjunto entre organizações.</p>
+        <p>Meu foco está em <strong style="color:#2aabab;">Redes de Empresas, Clusters e Arranjos Produtivos Locais</strong>, sempre visando produtividade, geração de emprego e renda para comunidades e territórios.</p>
+        <p>Não me limito a um único tema — a curiosidade é o melhor motor da ciência.</p>
+        <div class="emoji-line">👏 &nbsp;👍 &nbsp;😊</div>
+        <p>Todos os trabalhos publicados estão disponíveis em acesso aberto no Zenodo, para que o conhecimento chegue a quem precisa.</p>
+      </div>
+      <div class="about-card">
+        <div class="avatar">JC</div>
+        <h3>Jorge Campos</h3>
+        <div class="role">Pesquisador · Divulgação Científica</div>
+        <div class="contact-links">
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/jorgepcampos/" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn — Jorge Campos
+          </a>
+          <a class="btn-email" href="mailto:depaivacampos@gmail.com">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            depaivacampos@gmail.com
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">🪲 Libélula</div>
+  <p>Divulgação Científica por Jorge Campos &nbsp;·&nbsp;
+    <a href="https://zenodo.org" target="_blank" rel="noopener">Publicações no Zenodo</a> &nbsp;·&nbsp;
+    <a href="mailto:depaivacampos@gmail.com">depaivacampos@gmail.com</a>
+  </p>
+  <p style="margin-top:.5rem;">© 2025 Libélula. Conteúdo em acesso aberto.</p>
+</footer>
+
+</body>
+</html>
