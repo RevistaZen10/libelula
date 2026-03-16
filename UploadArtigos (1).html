@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenodo Article Uploader - LaTeX Edition</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .icon-box {
+            background: #667eea;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+        h1 {
+            font-size: 28px;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
+        }
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .info-box h3 {
+            color: #1e40af;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .info-box ol {
+            color: #1e40af;
+            margin-left: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            font-family: inherit;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .drop-zone {
+            border: 3px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+        }
+        .drop-zone:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #e0f2fe 0%, #ddd6fe 100%);
+        }
+        .drop-zone.dragover {
+            border-color: #667eea;
+            background: #dbeafe;
+        }
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            color: #667eea;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .author-item {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 2px solid #e5e7eb;
+        }
+        .author-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .author-row {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-small {
+            padding: 8px 16px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        .btn-small:hover {
+            background: #dc2626;
+        }
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            background: none;
+            border: none;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .btn-add:hover {
+            color: #764ba2;
+        }
+        .btn-test {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .btn-test:hover {
+            background: #2563eb;
+        }
+        .status {
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid;
+            margin-top: 20px;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .status-success {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #166534;
+        }
+        .status-error {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+        .status-info {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #1e40af;
+        }
+        .status-warning {
+            background: #fffbeb;
+            border-color: #fcd34d;
+            color: #92400e;
+        }
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none !important;
+        }
+        .doi-box {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 2px solid #86efac;
+            margin-top: 12px;
+        }
+        .doi-box a {
+            color: #667eea;
+            word-break: break-all;
+            font-family: monospace;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+        .zenodo-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        @media (max-width: 768px) {
+            .author-row {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="card">
+            <div class="header">
+                <div class="icon-box">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Zenodo Article Uploader <span class="zenodo-badge">LaTeX Ready</span></h1>
+                    <p class="subtitle">📤 Submeta seus artigos científicos ao Zenodo automaticamente</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3>📖 Como usar:</h3>
+                <ol>
+                    <li>Configure seu token do Zenodo (Sandbox para testes, Production para publicação final)</li>
+                    <li>Faça upload do PDF do seu artigo LaTeX</li>
+                    <li>Preencha ou ajuste os metadados extraídos</li>
+                    <li>Clique em "Submeter ao Zenodo"</li>
+                    <li>Receba seu DOI permanente!</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Token Configuration -->
+        <!-- Token Configuration -->
+<div class="card">
+    <h2 style="margin-bottom: 16px; font-size: 20px;">🔐 Configuração do Zenodo</h2>
+    
+    <label class="checkbox-label">
+        <input type="checkbox" id="useSandbox" checked>
+        <span>Usar Zenodo Sandbox (recomendado para testes - DOI temporário)</span>
+    </label>
+    
+    <div class="form-group">
+        <label for="zenodoToken">Token de Acesso:</label>
+
+
+
+
+
+
+
+
+        
+        <input type="password" id="zenodoToken" name="zenodoToken" placeholder="Coloque o token aqui:" value="O3ZAkFslWwuCxbwf8DHQedVVWEo2DW2RhsePUN9yN4L21R3tTf30jFsJO699">
+
+
+
+
+
+
+
+
+
+
+
+        
+                
+                <p class="help-text">
+                    🔑 Obtenha em: 
+                    <a href="https://sandbox.zenodo.org/account/settings/applications/" target="_blank" class="link">Zenodo Sandbox</a> ou 
+                    <a href="https://zenodo.org/account/settings/applications/" target="_blank" class="link">Zenodo Production</a>
+                    <br>
+                    ⚠️ Marque os scopes: <strong>deposit:write</strong> e <strong>deposit:actions</strong>
+                </p>
+            </div>
+            
+            <button onclick="testConnection()" class="btn-add btn-test">
+                🔍 Testar Conexão com Zenodo
+            </button>
+        </div>
+
+        <!-- File Upload -->
+        <div class="card">
+            <h2 style="margin-bottom: 16px; font-size: 20px;">📄 Upload do Artigo</h2>
+            
+            <div id="dropZone" class="drop-zone">
+                <input type="file" id="pdfFile" accept=".pdf" class="hidden">
+                <div id="uploadPrompt">
+                    <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p style="font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px;">
+                        Clique ou arraste seu PDF aqui
+                    </p>
+                    <p style="font-size: 14px; color: #6b7280;">
+                        Extração automática otimizada para PDFs LaTeX
+                    </p>
+                </div>
+                <div id="loadingPrompt" class="hidden">
+                    <div class="spinner" style="width: 60px; height: 60px; border-width: 4px; margin: 0 auto 16px; border-color: #667eea; border-top-color: transparent;"></div>
+                    <p style="font-size: 18px; font-weight: 600; color: #667eea;">
+                        Processando PDF...
+                    </p>
+                    <p style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+                        Extraindo metadados do documento
+                    </p>
+                </div>
+                <div id="successPrompt" class="hidden">
+                    <svg style="width: 60px; height: 60px; margin: 0 auto 16px; color: #10b981;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p id="fileName" style="font-size: 18px; font-weight: 600; color: #10b981;"></p>
+                    <p style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+                        Clique para trocar o arquivo
+                    </p>
+                </div>
+            </div>
+            
+            <div id="debugSection" class="hidden" style="margin-top: 16px;">
+                <button onclick="showDebugText()" class="btn-add" style="padding: 8px 16px; background: #f59e0b; color: white; border-radius: 6px;">
+                    🔍 Mostrar Texto Extraído (Debug)
+                </button>
+            </div>
+        </div>
+
+        <!-- Debug Text Area -->
+        <div id="debugTextArea" class="card hidden">
+            <h2 style="margin-bottom: 16px; font-size: 20px;">🔍 Texto Extraído do PDF</h2>
+            <textarea id="debugText" rows="15" readonly style="font-family: monospace; font-size: 12px; background: #f3f4f6;"></textarea>
+            <p class="help-text" style="margin-top: 8px;">
+                ℹ️ Primeiras 3000 caracteres extraídos do PDF. Use para verificar como o texto está sendo lido.
+            </p>
+        </div>
+
+        <!-- Metadata Form -->
+        <div id="metadataForm" class="card hidden">
+            <h2 style="margin-bottom: 16px; font-size: 20px;">📝 Metadados do Artigo</h2>
+            
+            <div class="form-group">
+                <label for="title">📌 Título *</label>
+                <input type="text" id="title" name="title" placeholder="Título completo do artigo">
+            </div>
+
+            <div class="form-group">
+                <label for="description">📝 Resumo/Abstract *</label>
+                <textarea id="description" name="description" rows="6" placeholder="Resumo ou abstract do artigo"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>👥 Autores</label>
+                <div id="authorsList"></div>
+                <button class="btn-add" onclick="addAuthor()">
+                    <span style="font-size: 20px;">+</span> Adicionar autor
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label for="keywords">🏷️ Palavras-chave</label>
+                <input type="text" id="keywords" name="keywords" placeholder="palavra1, palavra2, palavra3">
+                <p class="help-text">Separe as palavras-chave por vírgula</p>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="card">
+            <button id="submitBtn" class="btn btn-primary" onclick="submitToZenodo()" disabled>
+                <span id="submitBtnText">🚀 Submeter ao Zenodo</span>
+            </button>
+        </div>
+
+        <!-- Status Area -->
+        <div id="statusArea"></div>
+    </div>
+
+    <script>
+        // Global variables
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        let selectedFile = null;
+        let extractedFullText = '';
+        let authors = [{
+            name: 'Paulo Sérgio de Andrade',
+            affiliation: 'Faculdade de Guarulhos (FG), Guarulhos, São Paulo',
+            orcid: '0009-0004-2555-3178'
+        }];
+
+        // Setup drag and drop
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('pdfFile');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Handle file selection
+        async function handleFile(file) {
+            if (file.type !== 'application/pdf') {
+                showStatus('❌ Por favor, selecione um arquivo PDF válido.', 'error');
+                return;
+            }
+
+            selectedFile = file;
+            
+            // Update UI
+            document.getElementById('uploadPrompt').classList.add('hidden');
+            document.getElementById('successPrompt').classList.add('hidden');
+            document.getElementById('loadingPrompt').classList.remove('hidden');
+
+            // Extract text from PDF
+            await extractPDFText(file);
+        }
+
+        // Extract text from PDF using PDF.js
+        async function extractPDFText(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                
+                // FIRST: Try to get metadata from PDF properties
+                const metadata = await pdf.getMetadata();
+                let hasMetadata = false;
+                
+                if (metadata && metadata.info) {
+                    const info = metadata.info;
+                    
+                    // Title from PDF metadata
+                    if (info.Title && info.Title.trim().length > 0) {
+                        document.getElementById('title').value = info.Title.trim();
+                        hasMetadata = true;
+                    }
+                    
+                    // Description/Abstract from PDF Subject
+                    if (info.Subject && info.Subject.trim().length > 0) {
+                        document.getElementById('description').value = info.Subject.trim();
+                        hasMetadata = true;
+                    }
+                    
+                    // Keywords from PDF metadata
+                    if (info.Keywords && info.Keywords.trim().length > 0) {
+                        document.getElementById('keywords').value = info.Keywords.trim();
+                        hasMetadata = true;
+                    }
+                    
+                    // Author from PDF metadata
+                    if (info.Author && info.Author.trim().length > 0) {
+                        // Check if it's not the default author
+                        const pdfAuthor = info.Author.trim();
+                        if (pdfAuthor !== 'Paulo Sérgio de Andrade' && pdfAuthor !== 'PAULO SÉRGIO DE ANDRADE') {
+                            authors[0].name = pdfAuthor;
+                        }
+                        hasMetadata = true;
+                    }
+                }
+                
+                // If we got metadata, we're mostly done!
+                if (hasMetadata) {
+                    showStatus('✅ Metadados extraídos dos metadados do PDF! Verifique e ajuste se necessário.', 'success');
+                } else {
+                    // Fallback: Extract from text content
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + '\n';
+                    }
+                    
+                    extractedFullText = fullText;
+                    autoFillMetadata(fullText, file.name);
+                    showStatus('✅ PDF processado! Verifique os metadados abaixo e ajuste se necessário.', 'success');
+                }
+                
+                // Always extract full text for debug
+                if (!extractedFullText) {
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + '\n';
+                    }
+                    extractedFullText = fullText;
+                }
+                
+                renderAuthors();
+                
+                // Show form and enable submit
+                document.getElementById('metadataForm').classList.remove('hidden');
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('debugSection').classList.remove('hidden');
+
+                // Update UI
+                document.getElementById('loadingPrompt').classList.add('hidden');
+                document.getElementById('successPrompt').classList.remove('hidden');
+                document.getElementById('fileName').textContent = `✅ ${file.name}`;
+
+            } catch (error) {
+                console.error('Error extracting PDF:', error);
+                
+                document.getElementById('metadataForm').classList.remove('hidden');
+                document.getElementById('submitBtn').disabled = false;
+                renderAuthors();
+                
+                document.getElementById('loadingPrompt').classList.add('hidden');
+                document.getElementById('successPrompt').classList.remove('hidden');
+                document.getElementById('fileName').textContent = `✅ ${file.name}`;
+
+                showStatus('⚠️ PDF carregado. Por favor, preencha os metadados manualmente.', 'warning');
+            }
+        }
+
+        // Show debug text
+        function showDebugText() {
+            const debugArea = document.getElementById('debugTextArea');
+            const debugText = document.getElementById('debugText');
+            
+            debugText.value = extractedFullText.substring(0, 3000);
+            debugArea.classList.remove('hidden');
+            debugArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Auto-fill metadata from text - OPTIMIZED FOR YOUR LATEX FORMAT
+        function autoFillMetadata(text, filename) {
+            // FIRST: Remove common LaTeX template garbage from the beginning
+            text = text.replace(/^[\s\S]*?(springer|nature|latex|template)[\s\S]*?\n/im, '');
+            
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            // TITLE EXTRACTION - First line that looks like a real title
+            let potentialTitle = '';
+            
+            for (let i = 0; i < Math.min(lines.length, 20); i++) {
+                const line = lines[i];
+                
+                // AGGRESSIVE SKIP of template junk
+                if (line.match(/springer|nature|latex|template|preprint|draft/i)) continue;
+                if (line.match(/[@]/i)) continue; // Has email
+                if (line.match(/orcid|lattes|id:/i)) continue; // Metadata
+                if (line.match(/^graduate|^faculdade|^university/i)) continue; // Affiliation
+                if (line.length < 30) continue; // Too short
+                if (line.length > 200) continue; // Too long
+                
+                // Skip section numbers and single words
+                if (line.match(/^\d+\s/)) continue;
+                if (line.split(/\s+/).length < 5) continue; // Title needs at least 5 words
+                
+                // Skip if it's the author name (all caps or proper case name format)
+                if (line.match(/^[A-ZÀ-Ú\s]+$/) && line.split(/\s+/).length <= 6) continue;
+                
+                // This should be the real title!
+                potentialTitle = line;
+                break;
+            }
+            
+            if (!potentialTitle) {
+                // Fallback: look for first long line with good capitalization
+                for (let i = 0; i < Math.min(lines.length, 30); i++) {
+                    const line = lines[i];
+                    if (line.length >= 40 && line.length <= 200) {
+                        const capitals = (line.match(/[A-Z]/g) || []).length;
+                        if (capitals >= 4) {
+                            potentialTitle = line;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (!potentialTitle) {
+                potentialTitle = filename.replace('.pdf', '').replace(/_/g, ' ');
+            }
+            
+            document.getElementById('title').value = potentialTitle.trim();
+
+            // ABSTRACT EXTRACTION - Text between "Abstract" and "Keywords"
+            let abstract = '';
+            
+            const abstractIndex = text.search(/\babstract\b/i);
+            if (abstractIndex !== -1) {
+                const afterAbstract = text.substring(abstractIndex + 8);
+                const endMatch = afterAbstract.search(/\b(keywords?|palavras-chave|introduction|introdução|1\s+introduction)\b/i);
+                
+                if (endMatch !== -1) {
+                    abstract = afterAbstract.substring(0, endMatch);
+                } else {
+                    abstract = afterAbstract.substring(0, 2000);
+                }
+                
+                abstract = abstract
+                    .replace(/\s+/g, ' ')
+                    .replace(/\n/g, ' ')
+                    .trim();
+                
+                document.getElementById('description').value = abstract;
+            }
+
+            // KEYWORDS EXTRACTION
+            const keywordsMatch = text.match(/keywords?[:\s]+(.+?)(?:\n\n|introduction|1\s+introduction|\d+\s+\w+)/is);
+            if (keywordsMatch) {
+                let keywords = keywordsMatch[1]
+                    .replace(/\n/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .replace(/[;.]/g, ',')
+                    .trim();
+                
+                keywords = keywords.replace(/,+/g, ',').replace(/,\s*$/, '');
+                document.getElementById('keywords').value = keywords;
+            }
+
+            // AUTHOR EXTRACTION
+            const titleIndex = text.indexOf(potentialTitle);
+            const abstractStartIndex = text.search(/\babstract\b/i);
+            
+            if (titleIndex !== -1 && abstractStartIndex !== -1) {
+                const betweenTitleAndAbstract = text.substring(titleIndex + potentialTitle.length, abstractStartIndex);
+                const betweenLines = betweenTitleAndAbstract.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                
+                let authorName = '';
+                let affiliation = '';
+                let orcid = '';
+                
+                for (let i = 0; i < betweenLines.length; i++) {
+                    const line = betweenLines[i];
+                    
+                    // Author name (all caps or proper case, 2-6 words)
+                    if (!authorName && line.match(/^[A-ZÀ-Ú][A-ZÀ-Úa-zà-ú\s]+$/) && line.split(/\s+/).length >= 2 && line.split(/\s+/).length <= 6) {
+                        authorName = line;
+                        continue;
+                    }
+                    
+                    // Affiliation
+                    if (authorName && !affiliation && line.match(/graduate|faculdade|university|instituto|college/i)) {
+                        affiliation = line.replace(/@.*$/, '').replace(/lattes.*$/i, '').replace(/orcid.*$/i, '').trim();
+                        continue;
+                    }
+                    
+                    // ORCID
+                    const orcidMatch = line.match(/orcid[:\s]+([0-9-]+)/i);
+                    if (orcidMatch) {
+                        orcid = orcidMatch[1];
+                    }
+                }
+                
+                if (authorName) {
+                    authors = [{
+                        name: authorName,
+                        affiliation: affiliation || '',
+                        orcid: orcid || ''
+                    }];
+                }
+            }
+
+            renderAuthors();
+        }
+
+        // Render authors list
+        function renderAuthors() {
+            const container = document.getElementById('authorsList');
+            container.innerHTML = '';
+            
+            authors.forEach((author, index) => {
+                const authorDiv = document.createElement('div');
+                authorDiv.className = 'author-item';
+                authorDiv.innerHTML = `
+                    <div class="author-inputs">
+                        <input type="text" value="${author.name}" onchange="updateAuthor(${index}, 'name', this.value)" placeholder="Nome completo" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;">
+                        <input type="text" value="${author.affiliation}" onchange="updateAuthor(${index}, 'affiliation', this.value)" placeholder="Instituição/Afiliação" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;">
+                        <div class="author-row">
+                            <input type="text" value="${author.orcid}" onchange="updateAuthor(${index}, 'orcid', this.value)" placeholder="ORCID (opcional)" style="flex: 1; padding: 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;">
+                            ${authors.length > 1 ? `<button onclick="removeAuthor(${index})" class="btn-small">Remover</button>` : ''}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(authorDiv);
+            });
+        }
+
+        function addAuthor() {
+            authors.push({ name: '', affiliation: '', orcid: '' });
+            renderAuthors();
+        }
+
+        function updateAuthor(index, field, value) {
+            authors[index][field] = value;
+        }
+
+        function removeAuthor(index) {
+            if (authors.length > 1) {
+                authors.splice(index, 1);
+                renderAuthors();
+            }
+        }
+
+        // Test connection with Zenodo
+        async function testConnection() {
+            const token = document.getElementById('zenodoToken').value;
+            const useSandbox = document.getElementById('useSandbox').checked;
+            
+            if (!token) {
+                showStatus('❌ Por favor, insira seu token primeiro!', 'error');
+                return;
+            }
+            
+            const baseUrl = useSandbox 
+                ? 'https://sandbox.zenodo.org/api'
+                : 'https://zenodo.org/api';
+            
+            showStatus('🔍 Testando conexão com Zenodo...', 'info');
+            
+            try {
+                const userResponse = await fetch(`${baseUrl}/deposit/depositions`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                let resultMsg = `<strong>📊 Resultado do Teste:</strong><br><br>`;
+                resultMsg += `<strong>URL:</strong> ${baseUrl}<br>`;
+                resultMsg += `<strong>Status:</strong> ${userResponse.status}<br><br>`;
+                
+                if (userResponse.ok) {
+                    const data = await userResponse.json();
+                    resultMsg += `✅ <strong>Token VÁLIDO!</strong><br>`;
+                    resultMsg += `Você tem ${data.length} depósito(s) existente(s).<br><br>`;
+                    resultMsg += `Agora você pode submeter seus artigos!`;
+                    showStatus(resultMsg, 'success');
+                } else {
+                    const errorText = await userResponse.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch {
+                        errorData = { message: errorText };
+                    }
+                    
+                    resultMsg += `❌ <strong>ERRO ${userResponse.status}</strong><br><br>`;
+                    
+                    if (userResponse.status === 403) {
+                        resultMsg += `<strong>Problema:</strong> Token sem permissões corretas<br><br>`;
+                        resultMsg += `<strong>Solução:</strong><br>`;
+                        resultMsg += `1. Vá em: <a href="${useSandbox ? 'https://sandbox.zenodo.org' : 'https://zenodo.org'}/account/settings/applications/" target="_blank" class="link">Settings → Applications</a><br>`;
+                        resultMsg += `2. Delete o token antigo<br>`;
+                        resultMsg += `3. Crie um NOVO token<br>`;
+                        resultMsg += `4. MARQUE os scopes:<br>`;
+                        resultMsg += `   ✅ <code>deposit:write</code><br>`;
+                        resultMsg += `   ✅ <code>deposit:actions</code><br>`;
+                        resultMsg += `5. Copie o novo token e cole aqui<br>`;
+                    } else if (userResponse.status === 401) {
+                        resultMsg += `<strong>Problema:</strong> Token inválido<br><br>`;
+                        resultMsg += `<strong>Solução:</strong><br>`;
+                        resultMsg += `- Certifique-se de copiar o token COMPLETO<br>`;
+                        resultMsg += `- Não deve ter espaços no início ou fim`;
+                    }
+                    
+                    if (errorData.message) {
+                        resultMsg += `<br><br><strong>Mensagem do Zenodo:</strong><br>${errorData.message}`;
+                    }
+                    
+                    showStatus(resultMsg, 'error');
+                }
+                
+            } catch (error) {
+                showStatus(`❌ Erro de conexão: ${error.message}<br><br>Verifique sua internet ou se o Zenodo está acessível.`, 'error');
+            }
+        }
+
+        // Submit to Zenodo
+        async function submitToZenodo() {
+            const token = document.getElementById('zenodoToken').value;
+            const useSandbox = document.getElementById('useSandbox').checked;
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const keywords = document.getElementById('keywords').value;
+
+            // Validation
+            if (!selectedFile) {
+                showStatus('❌ Por favor, selecione um arquivo PDF.', 'error');
+                return;
+            }
+
+            if (!token) {
+                showStatus('❌ Por favor, insira seu token do Zenodo.', 'error');
+                return;
+            }
+
+            if (!title || !description) {
+                showStatus('❌ Por favor, preencha o título e a descrição.', 'error');
+                return;
+            }
+
+            // Disable button and show loading
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnText = document.getElementById('submitBtnText');
+            submitBtn.disabled = true;
+            submitBtnText.innerHTML = '<div class="spinner"></div> Processando...';
+
+            const baseUrl = useSandbox 
+                ? 'https://sandbox.zenodo.org/api'
+                : 'https://zenodo.org/api';
+
+            try {
+                // Step 1: Create deposit
+                showStatus('📝 Criando depósito no Zenodo...', 'info');
+                const createResponse = await fetch(`${baseUrl}/deposit/depositions`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!createResponse.ok) {
+                    const errorText = await createResponse.text();
+                    let errorMsg = '';
+                    
+                    if (createResponse.status === 403) {
+                        errorMsg = `Erro 403 - Token sem permissão!\n\n`;
+                        errorMsg += `Verifique:\n`;
+                        errorMsg += `1. Token tem os scopes: deposit:write e deposit:actions\n`;
+                        errorMsg += `2. Você está usando o ambiente correto:\n`;
+                        errorMsg += `   - Sandbox marcado? Use token de sandbox.zenodo.org\n`;
+                        errorMsg += `   - Sandbox desmarcado? Use token de zenodo.org\n`;
+                        errorMsg += `3. Token não está expirado\n\n`;
+                        errorMsg += `Crie novo token em:\n`;
+                        if (useSandbox) {
+                            errorMsg += `https://sandbox.zenodo.org/account/settings/applications/tokens/new/`;
+                        } else {
+                            errorMsg += `https://zenodo.org/account/settings/applications/tokens/new/`;
+                        }
+                    } else if (createResponse.status === 401) {
+                        errorMsg = `Erro 401 - Token inválido ou não fornecido`;
+                    } else {
+                        errorMsg = `Erro ${createResponse.status}: ${errorText}`;
+                    }
+                    
+                    throw new Error(errorMsg);
+                }
+
+                const deposit = await createResponse.json();
+
+                // Step 2: Upload file
+                showStatus('📤 Fazendo upload do arquivo PDF...', 'info');
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                const uploadResponse = await fetch(`${baseUrl}/deposit/depositions/${deposit.id}/files`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error(`Erro ao fazer upload (${uploadResponse.status})`);
+                }
+
+                // Step 3: Update metadata
+                showStatus('📋 Atualizando metadados...', 'info');
+                const keywordsArray = keywords.split(',').map(k => k.trim()).filter(k => k.length > 0);
+                
+                const metadata = {
+                    metadata: {
+                        title: title,
+                        upload_type: 'publication',
+                        publication_type: 'article',
+                        description: description,
+                        creators: authors.filter(a => a.name.trim().length > 0),
+                        keywords: keywordsArray.length > 0 ? keywordsArray : undefined
+                    }
+                };
+
+                const metadataResponse = await fetch(`${baseUrl}/deposit/depositions/${deposit.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(metadata)
+                });
+
+                if (!metadataResponse.ok) {
+                    throw new Error(`Erro ao atualizar metadados (${metadataResponse.status})`);
+                }
+
+                // Step 4: Publish
+                showStatus('🎯 Publicando artigo...', 'info');
+                const publishResponse = await fetch(`${baseUrl}/deposit/depositions/${deposit.id}/actions/publish`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!publishResponse.ok) {
+                    throw new Error(`Erro ao publicar (${publishResponse.status})`);
+                }
+
+                const published = await publishResponse.json();
+
+                // Success!
+                const zenodoLink = useSandbox 
+                    ? `https://sandbox.zenodo.org/records/${deposit.id}`
+                    : `https://zenodo.org/records/${deposit.id}`;
+
+                let successMsg = `<strong>🎉 Artigo publicado com sucesso!</strong><br><br>`;
+                
+                successMsg += `<div class="doi-box">`;
+                successMsg += `<p style="margin-bottom: 8px;"><strong>🎯 DOI:</strong></p>`;
+                successMsg += `<a href="https://doi.org/${published.doi}" target="_blank">${published.doi}</a>`;
+                successMsg += `</div><br>`;
+                
+                successMsg += `<div class="doi-box" style="border-color: #93c5fd;">`;
+                successMsg += `<p style="margin-bottom: 8px;"><strong>🔗 Link direto do Zenodo:</strong></p>`;
+                successMsg += `<a href="${zenodoLink}" target="_blank">${zenodoLink}</a>`;
+                successMsg += `</div><br>`;
+                
+                if (useSandbox) {
+                    successMsg += `<p style="color: #f59e0b; font-weight: 600;">⚠️ Este é um DOI de TESTE (Sandbox). Para publicação real, desmarque "Usar Zenodo Sandbox" e use um token do Zenodo Production.</p>`;
+                }
+                
+                showStatus(successMsg, 'success');
+
+                submitBtnText.textContent = '✅ Publicado com Sucesso!';
+
+            } catch (error) {
+                console.error('Error:', error);
+                const formattedError = error.message.replace(/\n/g, '<br>');
+                showStatus(`❌ ${formattedError}`, 'error');
+                submitBtn.disabled = false;
+                submitBtnText.textContent = '🚀 Submeter ao Zenodo';
+            }
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusArea = document.getElementById('statusArea');
+            const classes = {
+                success: 'status-success',
+                error: 'status-error',
+                warning: 'status-warning',
+                info: 'status-info'
+            };
+
+            statusArea.innerHTML = `
+                <div class="card status ${classes[type]}">
+                    ${message}
+                </div>
+            `;
+            
+            statusArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Initialize
+        renderAuthors();
+    </script>
+</body>
+</html>
