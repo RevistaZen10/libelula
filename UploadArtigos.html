@@ -351,28 +351,7 @@
     
     <div class="form-group">
         <label for="zenodoToken">Token de Acesso:</label>
-
-
-
-
-
-
-
-
-        
-        <input type="password" id="zenodoToken" name="zenodoToken" placeholder="Coloque o token aqui:" value="qSwvPSn9HcGdfQpN2ktbQ2Lz8l0K7v0HdXaTRhnthOxN564urCvqduJCuJGD">
-
-
-
-
-
-
-
-
-
-
-
-        
+          <input type="password" id="zenodoToken" name="zenodoToken" placeholder="Coloque o token aqui:" value="qSwvPSn9HcGdfQpN2ktbQ2Lz8l0K7v0HdXaTRhnthOxN564urCvqduJCuJGD">
                 
                 <p class="help-text">
                     🔑 Obtenha em: 
@@ -487,11 +466,18 @@
         
         let selectedFile = null;
         let extractedFullText = '';
-        let authors = [{
-            name: 'Jorge Campos ',
-            affiliation: 'Universidade Estadual de Campinas, Campinas, São Paulo',
-            orcid: '0009-0007-6299-2008'
-        }];
+        let authors = [
+            {
+                name: 'Jorge Campos ',
+                affiliation: 'Universidade Estadual de Campinas, Campinas, São Paulo',
+                orcid: '0009-0007-6299-2008'
+            },
+            {
+                name: 'Libélula',
+                affiliation: '',
+                orcid: '0009-0007-6299-2008'
+            }
+        ];
 
         // Setup drag and drop
         const dropZone = document.getElementById('dropZone');
@@ -773,11 +759,17 @@
                 }
                 
                 if (authorName) {
-                    authors = [{
+                    authors[0] = {
                         name: authorName,
                         affiliation: affiliation || '',
                         orcid: orcid || ''
-                    }];
+                    };
+                    // Always ensure Libélula stays as second author
+                    authors[1] = {
+                        name: 'Libélula',
+                        affiliation: '',
+                        orcid: '0009-0007-6299-2008'
+                    };
                 }
             }
 
