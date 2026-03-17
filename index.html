@@ -68,6 +68,29 @@
     .btn-email{background:rgba(255,255,255,.12);color:var(--teal-light);border:1px solid rgba(42,171,171,.4);}
 
     #publicacoes{background:var(--teal-pale);border-top:1px solid #c0e8e8;border-bottom:1px solid #c0e8e8;}
+
+    #parceiros{background:var(--bg);padding:2rem;}
+    .parceiros-wrapper{background:white;max-width:1060px;margin:0 auto;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.05);padding:60px 40px;}
+    .parceiros-wrapper h2{color:#1a237e;font-family:'Playfair Display',serif;font-size:2em;margin-bottom:30px;text-align:center;font-weight:700;position:relative;padding-bottom:15px;}
+    .parceiros-wrapper h2::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80px;height:3px;background:#283593;}
+    .parceiros-wrapper .pw-sub{text-align:left;margin-bottom:30px;font-size:1.05em;color:#666;line-height:1.7;}
+    .affiliates-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:30px;margin-top:10px;}
+    .affiliate-card{background:linear-gradient(145deg,#f0faf7 0%,#e6f4f1 100%);border:1px solid rgba(0,121,107,0.2);border-top:4px solid #00796b;border-radius:10px;padding:30px;display:flex;flex-direction:column;gap:18px;transition:transform 0.2s,box-shadow 0.2s;}
+    .affiliate-card:hover{transform:translateY(-5px);box-shadow:0 8px 24px rgba(0,121,107,0.15);}
+    .affiliate-header{display:flex;align-items:center;gap:16px;}
+    .affiliate-logo{width:54px;height:54px;background:rgba(0,121,107,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .affiliate-name{color:#00695c;font-size:1.4em;font-weight:700;margin:0 0 4px;font-family:'Playfair Display',serif;}
+    .affiliate-tagline{font-size:0.85em;color:#00796b;font-style:italic;font-weight:600;margin:0;}
+    .affiliate-desc{font-size:0.95em;color:#37474f;line-height:1.75;margin:0;}
+    .affiliate-topics{display:flex;flex-wrap:wrap;gap:7px;}
+    .affiliate-topics span{background:rgba(0,121,107,0.10);color:#00695c;border:1px solid rgba(0,121,107,0.25);padding:4px 12px;border-radius:14px;font-size:0.78em;font-weight:600;}
+    .affiliate-author{display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border-radius:8px;border:1px solid rgba(0,121,107,0.15);}
+    .author-avatar{width:38px;height:38px;background:#00796b;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8em;font-weight:700;flex-shrink:0;overflow:hidden;}
+    .author-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+    .affiliate-author strong{display:block;color:#00695c;font-size:0.95em;}
+    .affiliate-author span{font-size:0.8em;color:#78909c;}
+    .affiliate-btn{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:9px 18px;background-color:#00796b;color:white!important;text-decoration:none;border-radius:5px;font-size:0.9em;font-weight:700;letter-spacing:0.02em;transition:background 0.3s,transform 0.15s;align-self:flex-start;}
+    .affiliate-btn:hover{background-color:#00695c;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,121,107,0.3);}
     .zenodo-banner{background:var(--white);border:1px solid #c0e8e8;border-radius:var(--radius);padding:2.5rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
     .zenodo-icon{flex-shrink:0;width:72px;height:72px;background:var(--teal);border-radius:12px;display:flex;align-items:center;justify-content:center;}
     .zenodo-text{flex:1;min-width:200px;}
@@ -100,6 +123,7 @@
   </a>
   <ul>
     <li><a href="#temas">Temas</a></li>
+    <li><a href="#parceiros">Parceiros</a></li>
     <li><a href="#publicacoes">Publicações</a></li>
     <li><a href="#sobre">Sobre</a></li>
   </ul>
@@ -158,16 +182,78 @@
       </div>
 
       <div class="topic-card">
-        <h3>📚 Revista Zenodo</h3>
-        <p style="font-size:.8rem;color:var(--teal);font-weight:600;margin-bottom:.5rem;">Connecting Research and Researchers</p>
-        <p>Plataforma institucional dedicada à promoção e disseminação de pesquisa científica em História, Matemática, Geografia, Biologia, Química, Física, Astronomia, Inteligência Artificial, Filosofia e Literatura.</p>
-        <a href="https://revistazen.pages.dev/" target="_blank" rel="noopener">Acessar Revista Zenodo →</a>
-      </div>
-
-      <div class="topic-card">
         <h3>Outros Temas</h3>
         <p>Sem um recorte temático fixo, a curiosidade científica também tem lugar aqui. Diversidade de assuntos é bem-vinda.</p>
         <a href="https://zenodo.org/search?q=metadata.creators.person_or_org.name%3A%22Lib%C3%A9lula%22&l=list&p=1&s=10&sort=bestmatch" target="_blank" rel="noopener">Explorar no Zenodo →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="parceiros">
+  <div class="parceiros-wrapper">
+    <h2>Parceiros</h2>
+    <p class="pw-sub">Iniciativas e plataformas que unem forças na missão de produzir e divulgar conhecimento científico de qualidade.</p>
+
+    <div class="affiliates-grid">
+
+      <div class="affiliate-card">
+        <div class="affiliate-header">
+          <div class="affiliate-logo">
+            <svg viewBox="0 0 48 48" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="24" cy="28" rx="3" ry="10" fill="#1a237e"/>
+              <ellipse cx="24" cy="18" rx="3.5" ry="4.5" fill="#283593"/>
+              <circle cx="24" cy="13" r="3" fill="#1a237e"/>
+              <circle cx="22.2" cy="12" r="1.1" fill="#0d1757"/>
+              <circle cx="25.8" cy="12" r="1.1" fill="#0d1757"/>
+              <ellipse cx="13" cy="18" rx="9" ry="4" fill="rgba(100,130,220,0.55)" stroke="#283593" stroke-width="0.8" transform="rotate(-15 13 18)"/>
+              <ellipse cx="35" cy="18" rx="9" ry="4" fill="rgba(100,130,220,0.55)" stroke="#283593" stroke-width="0.8" transform="rotate(15 35 18)"/>
+              <ellipse cx="14" cy="24" rx="8" ry="3.2" fill="rgba(100,130,220,0.40)" stroke="#283593" stroke-width="0.7" transform="rotate(-10 14 24)"/>
+              <ellipse cx="34" cy="24" rx="8" ry="3.2" fill="rgba(100,130,220,0.40)" stroke="#283593" stroke-width="0.7" transform="rotate(10 34 24)"/>
+              <line x1="22.5" y1="10.5" x2="18" y2="6" stroke="#1a237e" stroke-width="1" stroke-linecap="round"/>
+              <line x1="25.5" y1="10.5" x2="30" y2="6" stroke="#1a237e" stroke-width="1" stroke-linecap="round"/>
+              <circle cx="18" cy="5.8" r="1" fill="#1a237e"/>
+              <circle cx="30" cy="5.8" r="1" fill="#1a237e"/>
+            </svg>
+          </div>
+          <div>
+            <h4 class="affiliate-name">Revista Zenodo</h4>
+            <p class="affiliate-tagline">Connecting Research and Researchers</p>
+          </div>
+        </div>
+
+        <p class="affiliate-desc">
+          Plataforma institucional dedicada à promoção e disseminação de pesquisa científica em
+          História, Matemática, Matemática Ficcional, Geografia, Biologia, Química, Física,
+          Astronomia, Inteligência Artificial, Filosofia e Literatura.
+          Publicações disponíveis em acesso aberto via Zenodo.
+        </p>
+
+        <div class="affiliate-topics">
+          <span>História</span>
+          <span>Matemática</span>
+          <span>Geografia</span>
+          <span>Biologia</span>
+          <span>Química</span>
+          <span>Física</span>
+          <span>Astronomia</span>
+          <span>Inteligência Artificial</span>
+          <span>Filosofia</span>
+          <span>Literatura</span>
+        </div>
+
+        <div class="affiliate-author">
+          <div class="author-avatar">📚</div>
+          <div>
+            <strong>Revista Zenodo</strong>
+            <span>Portal Institucional de Pesquisa Científica · Guarulhos, SP</span>
+          </div>
+        </div>
+
+        <a href="https://revistazen.pages.dev/" target="_blank" rel="noopener" class="affiliate-btn">
+          🌐 Acessar Revista Zenodo
+        </a>
       </div>
 
     </div>
